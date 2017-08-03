@@ -1,0 +1,13 @@
+MultiThreadingSample ./PerformanceTest/Render_Pampers.txt
+MultiThreadingSample ./PerformanceTest/Renderer_PDFRef.txt
+MultiThreadingSample ./PerformanceTest/SF38718_44X34.txt
+MultiThreadingSample ./PerformanceTest/Render_jmockit.txt
+MultiThreadingSample ./PerformanceTest/Render_HorseMesa.txt
+MultiThreadingSample ./PerformanceTest/SF38718_Problem.txt
+MultiThreadingSample ./PerformanceTest/SF38650_Test_01.txt
+MultiThreadingSample ./PerformanceTest/SF36923_RasterizeDoc.txt
+MultiThreadingSample ./PerformanceTest/SF37312_AccessPages.txt
+MultiThreadingSample ./PerformanceTest/TextExtract.txt
+MultiThreadingSample ./PerformanceTest/PDFa.txt
+MultiThreadingSample ./PerformanceTest/PDFx.txt
+MultiThreadingSample ./PerformanceTest/XPS2PDF.txt

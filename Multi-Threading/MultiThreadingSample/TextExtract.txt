@@ -1,5 +1,5 @@
-TotalThreads=500
-activeThreads=7
+TotalThreads=400
+activeThreads=8
 BaseInit=true 
 processes=TextExtract
 LibraryPath=..\CPlusPlus\Binaries
@@ -16,5 +16,5 @@ TextExtractOptions=[
        OutFilePath=Output,
        NumberOfPages=1,
        repetitions=1,
-       SaveWordList=true
+       SaveWordList=false
        ]

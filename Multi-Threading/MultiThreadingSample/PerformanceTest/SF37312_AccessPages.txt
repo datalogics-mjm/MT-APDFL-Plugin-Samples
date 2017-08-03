@@ -1,5 +1,5 @@
 TotalThreads=400
-activeThreads=40
+activeThreads=20
 BaseInit=true 
 processes=Access
 MemoryManager=none
@@ -8,6 +8,6 @@ StatisticsFile=StatFile.log
 AccessOptions=[
        silent=false, 
        noapdfl=false, 
-       InFileName=.\pdf_reference_1-7.pdf,
+       InFileName=pdf_reference_1-7.pdf,
        OutFilePath=Output
 ]

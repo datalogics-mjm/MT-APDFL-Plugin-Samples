@@ -1,5 +1,5 @@
 TotalThreads=400
-activeThreads=40
+activeThreads=20
 BaseInit=true 
 processes=PDFx
 LogFile=PDFx.log

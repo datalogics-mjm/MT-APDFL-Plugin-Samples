@@ -258,14 +258,14 @@ int outerWorker (ThreadInfo *info)
 */
 void InitializeAllMemoryManagers ()
 {
-#ifndef __APPLE__
+#ifdef WIN_ENV
     rpmalloc_master_initialize ();
 #endif
 }
 
 void FinalizeAllMemoryManagers ()
 { 
-#ifndef __APPLE__
+#ifdef WIN_ENV
     rpmalloc_master_finalize ();
 #endif
 }
@@ -654,7 +654,7 @@ int main(int argc, char** argv)
 #else
 	gettimeofday (&endTime, &zone);
 	endCPU = clock();
-	wallTimeUsed = ((endTime.tv_sec - startTime.tv_sec) * 1.0) +
+	WallTimeUsed = ((endTime.tv_sec - startTime.tv_sec) * 1.0) +
 		((endTime.tv_usec - startTime.tv_usec) / 1000000);
 	CPUTimeUsed = ((endCPU -startCPU) * 1.0) / CLOCKS_PER_SEC;
 #endif

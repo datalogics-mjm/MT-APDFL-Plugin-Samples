@@ -1,14 +1,14 @@
 TotalThreads=400
-activeThreads=40
+activeThreads=20
 BaseInit=true 
 processes=TextExtract
 LogFile=TextExtract.log
-StatisticsFils=Stats.log
+StatisticsFile=Stats.log
 MemoryManager=none
 TextExtractOptions=[
        silent=false, 
        noapdfl=false, 
-       InFileName=.\pdf_reference_1-7.pdf,
+       InFileName=pdf_reference_1-7.pdf,
        OutFilePath=Output,
        NumberOfPages=1,
        repetitions=1,

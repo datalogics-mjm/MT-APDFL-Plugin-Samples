@@ -1,5 +1,5 @@
 TotalThreads=400
-activeThreads=40
+activeThreads=20
 BaseInit=true 
 processes=RasterizeDoc
 MemoryManager=none
@@ -8,7 +8,7 @@ StatisticsFile=StatFile.log
 RasterizeDocOptions=[
        silent=false, 
        noapdfl=false, 
-       InFileName=.\jmockit.pdf,
+       InFileName=jmockit.pdf,
        OutFilePath=Output,
        Resolution=300,
        ColorModel=DeviceRGB

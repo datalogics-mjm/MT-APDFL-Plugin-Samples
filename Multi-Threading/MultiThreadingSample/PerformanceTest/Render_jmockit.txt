@@ -1,5 +1,5 @@
 TotalThreads=400
-activeThreads=40
+activeThreads=20
 BaseInit=true 
 processes=Rasterizer
 MemoryManager=none
@@ -8,7 +8,7 @@ StatisticsFile=StatFile.log
 RasterizerOptions=[
        silent=false, 
        noapdfl=false, 
-       InFileName=.\jmockit.pdf,
+       InFileName=jmockit.pdf,
        OutFilePath=Output,
        NumberOfPages=1,
        repetitions=1,
