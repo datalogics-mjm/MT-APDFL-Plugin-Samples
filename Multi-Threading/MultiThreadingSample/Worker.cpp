@@ -66,7 +66,10 @@ char *workerclass::GetInFileName (int threadSequence)
 {
     char workname[2048], *result;
     int index = threadSequence % InFileCount;
-    sprintf (workname, "%s%c%s.%s", InFilePath[index], PathSep, InFileName[index], InFileSuffix[index]);
+    if (InFilePath[index][0])
+        sprintf (workname, "%s%c%s.%s", InFilePath[index], PathSep, InFileName[index], InFileSuffix[index]);
+    else
+        sprintf (workname, "%s.%s", InFileName[index], InFileSuffix[index]);
     result = (char *)malloc (strlen (workname) + 1);
     strcpy (result, workname);
     return (result);
@@ -84,7 +87,10 @@ char *workerclass::GetInFile2Name (int threadSequence)
 
     char workname[2048], *result;
     int index = threadSequence % InFile2Count;
-    sprintf (workname, "%s%c%s.%s", InFile2Path[index], PathSep, InFile2Name[index], InFile2Suffix[index]);
+    if (InFile2Path[index][0])
+        sprintf (workname, "%s%c%s.%s", InFile2Path[index], PathSep, InFile2Name[index], InFile2Suffix[index]);
+    else
+        sprintf (workname, "%s.%s", InFile2Name[index], InFile2Suffix[index]);
     result = (char *)malloc (strlen (workname) + 1);
     strcpy (result, workname);
     return (result);
@@ -102,7 +108,10 @@ char *workerclass::GetInFile3Name (int threadSequence)
 
     char workname[2048], *result;
     int index = threadSequence % InFile3Count;
-    sprintf (workname, "%s%c%s.%s", InFile3Path[index], PathSep, InFile3Name[index], InFile3Suffix[index]);
+    if (InFile3Path[index][0])
+        sprintf (workname, "%s%c%s.%s", InFile3Path[index], PathSep, InFile3Name[index], InFile3Suffix[index]);
+    else
+        sprintf (workname, "%s.%s", InFile3Name[index], InFile3Suffix[index]);
     result = (char *)malloc (strlen (workname) + 1);
     strcpy (result, workname);
     return (result);
@@ -150,7 +159,7 @@ void workerclass::startThreadWorker (ThreadInfo *info)
     }
     else
     {
-        ASUns32 flags = 0;
+        ASUns32 flags = kPDFLInitPreferLocalFonts;
         if (!info->LoadPlugins)
             flags |= kDontLoadPlugIns;
         info->instance = new APDFLib (flags, frameAttributes);
@@ -174,13 +183,10 @@ void workerclass::endThreadWorker (ThreadInfo *info)
     struct timezone zone;
     memset ((char *)&zone, 0, sizeof (struct timezone));
     gettimeofday (&info->endTime, &zone);
+    info->endCPU = clock ();
     info->wallTimeUsed = ((info->endTime.tv_sec - info->startTime.tv_sec) * 1.0) +
-                         (((info->endTime.tv_usec - info->startTime.tv_usec) * 1.0) / 1000000);
-    clockid_t clockId;
-    pthread_getcpuclockid (info->threadID, &clockId);
-    struct timespec cpuTime;
-    clock_gettime (clockId, &cpuTime);
-    info->cpuTimeUsed = cpuTime.tv_sec + ((cpuTime.tv_nsec * 1.0) / 1000000000.0);
+                         (((info->endTime.tv_usec - info->startTime.tv_usec) * 1.0) / 100000000);
+    info->cpuTimeUsed = ((info->endCPU - info->startCPU) * 1.0) / CLOCKS_PER_SEC;
     info->percentUtilized = (info->cpuTimeUsed / info->wallTimeUsed) * 100;
 #endif
     /* This is used by non windows thread pump to detect that a thread is complete */
@@ -211,7 +217,9 @@ void workerclass::splitpath (char *path, char **toPath, char **filename, char **
             finder[0] = 0;
             finder--;
             *toPath = pathCopy;
+            break;
         }
+        *filename = finder;
         break;
     }
 }
@@ -247,8 +255,17 @@ void workerclass::parseOneFileName (int index, char *inname)
 
     free (expandedName);
 
-    InFilePath[index] = (char *)malloc (strlen (path) + 1);
-    strcpy (InFilePath[index], path);
+    if (path)
+    {
+        InFilePath[index] = (char *)malloc (strlen (path) + 1);
+        strcpy (InFilePath[index], path);
+    }
+    else
+    {
+        InFilePath[index] = (char *)malloc (1);
+        InFilePath[index][0] = 0;
+    }
+
     InFileName[index] = (char *)malloc (strlen (name) + 1);
     strcpy (InFileName[index], name);
     InFileSuffix[index] = (char *)malloc (strlen (suffix) + 1);
@@ -268,9 +285,9 @@ void workerclass::parseTwoFileName (int index, char *inname)
     free (expandedName);
 
     InFile2Path[index] = (char *)malloc (strlen (path) + 1);
-    strcpy (InFilePath[index], path);
+    strcpy (InFile2Path[index], path);
     InFile2Name[index] = (char *)malloc (strlen (name) + 1);
-    strcpy (InFileName[index], name);
+    strcpy (InFile2Name[index], name);
     InFile2Suffix[index] = (char *)malloc (strlen (suffix) + 1);
     strcpy (InFile2Suffix[index], suffix);
 }
@@ -425,7 +442,10 @@ void    workerclass::ParseOptions (attributes *FrameAttributes, char *defaultInF
     char workpath[2048];
     for (int index = 0; index < InFileCount; index++)
     {
-        sprintf (workpath, "%s%c%s.%s", InFilePath[index], PathSep, InFileName[index], InFileSuffix[index]);
+        if (InFilePath[index][0])
+            sprintf (workpath, "%s%c%s.%s", InFilePath[index], PathSep, InFileName[index], InFileSuffix[index]);
+        else
+            sprintf (workpath, "%s.%s", InFileName[index], InFileSuffix[index]);
         if (access (workpath, 04))
         {
             printf ("The input file does not exist? \n%   \"%s\"\n", workpath);
@@ -435,7 +455,10 @@ void    workerclass::ParseOptions (attributes *FrameAttributes, char *defaultInF
 
     for (int index = 0; index < InFile2Count; index++)
     {
-        sprintf (workpath, "%s%c%s.%s", InFile2Path[index], PathSep, InFile2Name[index], InFile2Suffix[index]);
+        if (InFile2Path[index][0])
+            sprintf (workpath, "%s%c%s.%s", InFile2Path[index], PathSep, InFile2Name[index], InFile2Suffix[index]);
+        else
+            sprintf (workpath, "%s.%s", InFile2Name[index], InFile2Suffix[index]);
         if (access (workpath, 04))
         {
             printf ("The input file does not exist? \n%   \"%s\"\n", workpath);
@@ -445,7 +468,10 @@ void    workerclass::ParseOptions (attributes *FrameAttributes, char *defaultInF
 
     for (int index = 0; index < InFile3Count; index++)
     {
-        sprintf (workpath, "%s%c%s.%s", InFile3Path[index], PathSep, InFile3Name[index], InFile3Suffix[index]);
+        if (InFile3Path[index][0])
+            sprintf (workpath, "%s%c%s.%s", InFile3Path[index], PathSep, InFile3Name[index], InFile3Suffix[index]);
+        else
+            sprintf (workpath, "%s.%s", InFile3Name[index], InFile3Suffix[index]);
         if (access (workpath, 04))
         {
             printf ("The input file does not exist? \n%   \"%s\"\n", workpath);
